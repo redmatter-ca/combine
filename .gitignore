@@ -1,0 +1,6 @@
+*.pyc
+
+# setuptools artifacts
+/*.egg-info
+/build/
+/dist/
