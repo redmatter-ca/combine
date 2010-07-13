@@ -1,14 +1,21 @@
 # Copyright (c) 2010 John Reese
 # Licensed under the MIT license
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
   name = "combine",
   version = "0.1",
-  description = "Asset installation and upgrade management library for cross platform releases",
+  description = "Asset installation and upgrade management",
+  long_description =
+"""Cross platform module for automating the process of installing or upgrading
+binary assets from an HTTP server to a local machine, utilizing various
+compression and differencing methods to reduce bandwidth usage.
+""",
+
   author = "John Reese",
   author_email = "jreese@leetcode.net",
+  url = "http://leetcode.net/projects/combine",
 
   classifiers = [
     "Development Status :: 1 - Planning",
@@ -21,8 +28,9 @@ setup(
     "Topic :: System :: Installation/Setup",
     "Topic :: System :: Software Distribution",
   ],
+  license = "MIT license",
 
-  packages = find_packages(),
+  packages = ['combine'],
   zip_safe = True,
 )
 
