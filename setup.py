@@ -1,9 +1,7 @@
 # Copyright (c) 2010 John Reese
 # Licensed under the MIT license
 
-from setuptools import setup
-
-setup(
+combine_metadata = dict(
   name = "combine",
   version = "0.1",
   description = "Asset installation and upgrade management",
@@ -33,4 +31,13 @@ compression and differencing methods to reduce bandwidth usage.
   packages = ['combine'],
   zip_safe = True,
 )
+
+import platform
+from setuptools import setup
+
+if platform.win32_ver:
+  import py2exe
+  combine_metadata["console"] = []
+
+setup(**combine_metadata)
 
