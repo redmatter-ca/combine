@@ -3,5 +3,5 @@
 
 from combine import Diff
 
-d = Diff(oldpath="/tmp/cb/old", newpath="/tmp/cb/new", outputpath="/tmp/cb/out")
+d = Diff(oldpath="/tmp/combine/old", newpath="/tmp/combine/new")
 d.walk()
