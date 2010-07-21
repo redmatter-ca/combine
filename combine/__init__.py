@@ -1,7 +1,7 @@
 # Copyright (c) 2010 John Reese
 # Licensed under the MIT license
 
-class PrepError(Exception):
+class CombineError(Exception):
     def __init__(self, value):
         self.value = value
 
