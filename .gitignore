@@ -1,5 +1,9 @@
 *.pyc
 
+# documentation artifacts
+/doc/*.html
+/doc/*.mkdn
+
 # setuptools artifacts
 /*.egg-info
 /build/
