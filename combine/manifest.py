@@ -19,21 +19,22 @@ class Manifest:
         self.changes.append(change)
 
     def to_dict(self):
+        """
+        Generate a dictionary representation of the Manifest object.
+        """
+
         return {
             "current-version": self.oldver,
             "latest-version": self.newver,
             "manifest-format": MANIFEST_FORMAT,
         }
 
-    def to_yaml(self):
-        str = yaml.safe_dump(self.to_dict(), default_flow_style=False)
-        str += yaml.safe_dump({"changes": [c.to_dict() for c in self.changes]},
-                             default_flow_style=False)
-
-        return str
-
     @classmethod
     def from_dict(cls, data):
+        """
+        Given a dictionary object, generate a new Manifest object.
+        """
+
         format = data["manifest-format"]
         if (format > MANIFEST_FORMAT or format < 0):
             raise CombineError("Unsupported manifest format")
@@ -45,7 +46,22 @@ class Manifest:
 
         return mft
 
+    def to_yaml(self):
+        """
+        Generate a YAML data string representing the Manifest object.
+        """
+
+        str = yaml.safe_dump(self.to_dict(), default_flow_style=False)
+        str += yaml.safe_dump({"changes": [c.to_dict() for c in self.changes]},
+                             default_flow_style=False)
+
+        return str
+
     @classmethod
     def from_yaml(cls, str):
+        """
+        Given a string of YAML data, generate a new Manifest object.
+        """
+
         data = yaml.safe_load(str)
         return cls.from_dict(data)

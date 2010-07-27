@@ -8,6 +8,10 @@ class Change:
         self.filename = filename
 
     def to_dict(self):
+        """
+        Generate a dictionary representation of the Change object.
+        """
+
         return {
             "action": self.action,
             "filename": self.filename,
@@ -15,6 +19,10 @@ class Change:
 
     @classmethod
     def from_dict(cls, data):
+        """
+        Given a dictionary object, generate a new Change object.
+        """
+
         change = Change(data["action"], data["filename"])
 
         return change
