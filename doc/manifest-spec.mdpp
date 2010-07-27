@@ -1,0 +1,46 @@
+Manifest Specification
+======================
+
+The current revision of this specification is: version 1.
+
+This document covers the standardized format to be used for Combine manifest files, and how those files
+should be interpreted by compliant applications.
+
+!TOC
+
+File Classes and Formats
+------------------------
+
+There are three primary file classes that the Combine manifest format supports:
+
+### Whole Files
+
+This file class is considered to represent a single file or asset, in either a compressed
+or uncompressed state.  Supported whole file formats include:
+
+* "raw": Uncompressed file format, with no transformations applied.
+* "gzip": Compressed file format as defined by [GNU gzip](http://www.gzip.org/).
+* "bzip2": Compressed file format as defined by [bzip2](http://www.bzip.org/).
+
+### Patch Files
+
+This file class is considered to represent the changes between two revisions of a single
+file, generally in a compressed state.  This class generally expects an existing (old) revision of a file
+to exist as a target for a special application to apply the patch, resulting in the new revision of the
+file.  Supported patch file formats include:
+
+* "bsdiff": Compressed file patch format, as defined by [bsdiff](http://www.daemonology.net/bsdiff/)
+
+### Package Files
+
+This file class is considered to represent multiple files of the above file classes,
+used for transmitting entire file hierarchies as single compressed package.  Supported package formats
+include:
+
+* "tar-gzip": Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
+  using the gzip format defined by [GNU gzip](http://www.gzip.org/).
+* "tar-bzip2": Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
+  using the bzip2 format defined by [bzip2](http://www.bzip.org/).
+* "zip": Compressed archive format, as defined by the
+  [ZIP format](http://en.wikipedia.org/wiki/ZIP_(file_format))
+
