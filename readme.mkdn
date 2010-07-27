@@ -7,7 +7,8 @@ manifest of changes and a single package containing those changes in a highly co
 Combine can then use that manifest and package to update an existing set of files, while
 maintaining integrity using checksums and "repairing" corrupted files.
 
-This software is distributed under the [MIT License](LICENSE), and is therefore free for use
+This software is distributed under the [MIT License][license], and is therefore free for use
 and modification in both open and closed source projects.  Submitting bug fixes or improvements
 back to the main project is greatly appreciated, but never required.
 
+[license]: http://github.com/overwatchmod/combine/blob/master/LICENSE
