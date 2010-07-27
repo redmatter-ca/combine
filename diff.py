@@ -3,8 +3,8 @@
 
 from combine import Diff, Manifest, Change
 
-d = Diff(oldpath="/tmp/combine/old", newpath="/tmp/combine/new")
-d.walk()
+#d = Diff(oldpath="/tmp/combine/old", newpath="/tmp/combine/new")
+#d.walk()
 
 m = Manifest(1,3)
 m.add_change(Change("create", "bar"))

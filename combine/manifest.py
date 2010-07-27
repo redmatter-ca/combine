@@ -5,6 +5,8 @@ import yaml
 
 from combine import Change
 
+MANIFEST_FORMAT = 1
+
 class Manifest:
 
     def __init__(self, oldver, newver):
@@ -20,9 +22,13 @@ class Manifest:
         return {
             "current-version": self.oldver,
             "latest-version": self.newver,
-            "changes": [c.to_dict() for c in self.changes],
+            "manifest-format": MANIFEST_FORMAT,
         }
 
     def to_yaml(self):
-        print yaml.safe_dump(self.to_dict(), default_flow_style=False)
+        str = yaml.safe_dump(self.to_dict(), default_flow_style=False)
+        str += yaml.safe_dump({"changes": [c.to_dict() for c in self.changes]},
+                             default_flow_style=False)
+
+        return str
 
