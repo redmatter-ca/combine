@@ -3,7 +3,7 @@
 
 import yaml
 
-from combine import Change
+from combine import Change, CombineError
 
 MANIFEST_FORMAT = 1
 
@@ -32,3 +32,20 @@ class Manifest:
 
         return str
 
+    @classmethod
+    def from_dict(cls, data):
+        format = data["manifest-format"]
+        if (format > MANIFEST_FORMAT or format < 0):
+            raise CombineError("Unsupported manifest format")
+
+        mft = Manifest(data["current-version"], data["latest-version"])
+
+        for change in data["changes"]:
+            mft.add_change(Change.from_dict(change))
+
+        return mft
+
+    @classmethod
+    def from_yaml(cls, str):
+        data = yaml.safe_load(str)
+        return cls.from_dict(data)

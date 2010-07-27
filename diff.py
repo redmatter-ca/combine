@@ -10,4 +10,8 @@ m = Manifest(1,3)
 m.add_change(Change("create", "bar"))
 m.add_change(Change("replace", "foo"))
 
-print m.to_yaml()
+str = m.to_yaml()
+print str
+
+m2 = Manifest.from_yaml(str)
+print m2.to_yaml()

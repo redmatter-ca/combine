@@ -12,3 +12,9 @@ class Change:
             "action": self.action,
             "filename": self.filename,
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        change = Change(data["action"], data["filename"])
+
+        return change
