@@ -1,9 +1,12 @@
 mdpp=$(wildcard *.mdpp)
-mkdn=$(patsubst %.mdpp,%.md,$(mdpp))
-html=$(patsubst %.md,%.html,$(mkdn))
+mkdn=$(patsubst %.mdpp,%.mkdn,$(mdpp))
+html=$(patsubst %.mkdn,%.html,$(mkdn))
 
-.PHONY: all
-all: $(html)
+.PHONY: markdown
+markdown: $(mkdn)
+
+.PHONY: html
+html: $(html)
 
 .PHONY: clean
 clean:
