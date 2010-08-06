@@ -8,6 +8,23 @@ should be interpreted by compliant applications.
 
 !TOC
 
+Definitions
+===========
+
+Data Types
+----------
+
+* String
+  > A value represented by a series of characters or digits.
+
+* List
+  > An ordered series of arbitrary values that may or may not be sorted.
+
+* Dictionary
+  > A mapping of keys to values, where the keys can be a set of numbers or strings that define
+  > a one-to-one relationship with values of an arbitrary type.
+
+
 File Classes and Formats
 ------------------------
 
