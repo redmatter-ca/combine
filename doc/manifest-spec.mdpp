@@ -61,3 +61,75 @@ include:
 * "zip": Compressed archive format, as defined by the
   [ZIP format](http://en.wikipedia.org/wiki/ZIP_(file_format))
 
+
+Manifest Structure
+==================
+
+The manifest is represented as a dictionary containing values, lists or dictionaries to create
+a hierarchy of data about what has changed in a file tree.
+
+
+Manifest Properties
+-------------------
+
+* "current-version" (string)
+  The version of the software already installed to the user's system.  In the case where the
+  software has not yet been installed, this should be an empty string for convention.
+
+* "update-version" (string)
+  The version of the software that the user's installation will be updated to, or installed.
+
+* "package-uri" (string)
+  A URI pointing to a package file that contains files relevant to the upgrade.  This can either
+  be a remote URI that the updater will need to fetch the package from, or it can be a local
+  URI for cases where the package would be pre-distributed with the updater/installer.
+
+* "package-format" (string, optional)
+  In cases where the package file does not have a recognized file extension, this allows the
+  updater to determine what format to use when extracting package contents.
+
+* "package-sha1" (string)
+  Hash fingerprint of the package file, using the SHA1 hashing algorithm, used to verify integrity
+  of the package file before extracting contents.
+
+* "actions" (list)
+  A list of dictionaries, each containing a set of values regarding to an action to take for an
+  individual file in the software installation.
+
+
+Action Properties
+-----------------
+
+* "action" (string)
+  Name of action to be performed.  Information about individual action types can be found
+  in a later section of the specification.
+
+* "filename" (string)
+  Relative path and name of file, from the root of the software installation.
+
+* "sha1-before" (string, contextual)
+  Hash fingerprint of the installed file, using the SHA1 hashing algorithm, used to verify
+  integrity of the file before performing the requested action.
+
+* "sha1-after" (string, contextual)
+  Hash fingerprint of the installed file, using the SHA1 hashing algorithm, used to verify
+  integrity of the file after performing the requested action.
+
+* "patch-uri" (string, contextual)
+  A URI pointing to a patch file to be applied to an installed file.  This can either
+  be a remote URI that the updater will need to fetch the file from, or it can be a local
+  URI for cases where the package would be pre-distributed with the updater/installer.
+
+* "patch-format" (string, contextual)
+  In cases where the patch file does not have a recognized file extension, this allows the
+  updater to determine what format to use when applying the patch contents.
+
+* "full-uri" (string, contextual)
+  A URI pointing to a full file to be applied to an installed file.  This can either
+  be a remote URI that the updater will need to fetch the file from, or it can be a local
+  URI for cases where the package would be pre-distributed with the updater/installer.
+
+* "full-format" (string, contextual)
+  In cases where the full file does not have a recognized file extension, this allows the
+  updater to determine what format to use when decompressing the file contents.
+
