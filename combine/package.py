@@ -18,6 +18,7 @@ class Package:
 
         self._open = True
         self._tempdir = tempfile.mkdtemp(prefix="combine_")
+        self._fhs = {}
 
         if archive:
             self.read(archive, format)
@@ -33,10 +34,21 @@ class Package:
 
     def open(self, filename, mode="r"):
         """
-        Open a file descriptor in the package's workspace.
+        Open a file descriptor in the package's workspace. If the file
+        handle is still open from a previous operation, raise an error.
         """
 
-        return open(path.join(self._tempdir, filename), mode)
+        if filename in self._fhs:
+            fh = self._fhs[filename]
+            if fh.closed:
+                del self._fhs[filename]
+            else:
+                raise Exception("File %s already open" % (filename))
+
+        fh = open(path.join(self._tempdir, filename), mode)
+        self._fhs[filename] = fh
+
+        return fh
 
     def read(self, filename, format=None):
         """
@@ -51,6 +63,10 @@ class Package:
         Create a new package file from the temporary workspace.
         """
 
+        for fn, fh in self._fhs.items():
+            if not fh.closed:
+                raise Exception("File %s still open" % (fn))
+
         with formats.Archive(filename, mode="w") as archive:
             for root, dirs, files in os.walk(self._tempdir):
                 for file in files:
@@ -60,9 +76,13 @@ class Package:
 
     def close(self):
         """
-        Close out any remaining file descriptors, and cleanup any temporary
+        Close out any remaining file handles, and cleanup any temporary
         directories used by this instance.
         """
+
+        for fn, fh in self._fhs.items():
+            if not fh.closed:
+                fh.close()
 
         if self._open:
             shutil.rmtree(path=self._tempdir, ignore_errors=True)
