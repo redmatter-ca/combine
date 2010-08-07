@@ -14,15 +14,12 @@ Definitions
 Data Types
 ----------
 
-* String
-  > A value represented by a series of characters or digits.
+* String: A value represented by a series of characters or digits.
 
-* List
-  > An ordered series of arbitrary values that may or may not be sorted.
+* List: An ordered series of arbitrary values that may or may not be sorted.
 
-* Dictionary
-  > A mapping of keys to values, where the keys can be a set of numbers or strings that define
-  > a one-to-one relationship with values of an arbitrary type.
+* Dictionary: A mapping of keys to values, where the keys can be a set of numbers or strings that define
+  a one-to-one relationship with values of an arbitrary type.
 
 
 File Classes and Formats
@@ -36,7 +33,9 @@ This file class is considered to represent a single file or asset, in either a c
 or uncompressed state.  Supported whole file formats include:
 
 * "raw": Uncompressed file format, with no transformations applied.
+
 * "gzip": Compressed file format as defined by [GNU gzip](http://www.gzip.org/).
+
 * "bzip2": Compressed file format as defined by [bzip2](http://www.bzip.org/).
 
 ### Patch Files
@@ -56,8 +55,10 @@ include:
 
 * "tar-gzip": Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
   using the gzip format defined by [GNU gzip](http://www.gzip.org/).
+
 * "tar-bzip2": Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
   using the bzip2 format defined by [bzip2](http://www.bzip.org/).
+
 * "zip": Compressed archive format, as defined by the
   [ZIP format](http://en.wikipedia.org/wiki/ZIP_(file_format))
 
