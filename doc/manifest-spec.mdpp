@@ -63,6 +63,21 @@ include:
   [ZIP format](http://en.wikipedia.org/wiki/ZIP_(file_format))
 
 
+URI Protocols
+-------------
+
+These are the URI protocols that must be supported for base manifest specification.  Other
+protocols may be supported, but are not required:
+
+* "http", "https": Remote location using the HTTP protocol.  Support for SSL connections and
+  HTTP BASIC authentication is required.  Authentication credentials should be supplied as part
+  of the URI string.
+
+* "package": Local filesystem path, relative to the root path of an extracted package archive.
+  As an example, if a package has been extracted to `/tmp/pack`, `package://path/to/file` would refer
+  to a full file path of `/tmp/pack/path/to/file`.
+
+
 Manifest Structure
 ==================
 
