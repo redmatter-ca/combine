@@ -8,7 +8,6 @@ class CombineError(Exception):
     def __str__(self):
         return repr(self.value)
 
-from combine.change import Change
 from combine.manifest import Manifest
 from combine.diff import Diff
 
