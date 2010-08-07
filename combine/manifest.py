@@ -9,25 +9,22 @@ MANIFEST_FORMAT = 1
 
 class Manifest:
 
-    def __init__(self, oldver, newver):
-        self.oldver = oldver
-        self.newver = newver
+    def __init__(self):
+        self.properties = {}
+        self.actions = []
 
-        self.changes = []
+    def add_property(self, name, value):
+        self.properties[name] = value
 
-    def add_change(self, change):
-        self.changes.append(change)
+    def add_action(self, action):
+        self.actions.append(action)
 
     def to_dict(self):
         """
         Generate a dictionary representation of the Manifest object.
         """
 
-        return {
-            "current-version": self.oldver,
-            "latest-version": self.newver,
-            "manifest-format": MANIFEST_FORMAT,
-        }
+        return dict(self.properties, actions=self.actions)
 
     @classmethod
     def from_dict(cls, data):
@@ -39,10 +36,16 @@ class Manifest:
         if (format > MANIFEST_FORMAT or format < 0):
             raise CombineError("Unsupported manifest format")
 
-        mft = Manifest(data["current-version"], data["latest-version"])
+        mft = Manifest()
 
-        for change in data["changes"]:
-            mft.add_change(Change.from_dict(change))
+        for key, value in data.items():
+            if key == "actions":
+                for action in value:
+                    mft.add_action(action)
+            else:
+                mft.add_property(key, value)
+        for action in data["actions"]:
+            mft.add_action(action)
 
         return mft
 
@@ -52,8 +55,6 @@ class Manifest:
         """
 
         str = yaml.safe_dump(self.to_dict(), default_flow_style=False)
-        str += yaml.safe_dump({"changes": [c.to_dict() for c in self.changes]},
-                             default_flow_style=False)
 
         return str
 
