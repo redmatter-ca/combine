@@ -35,7 +35,7 @@ compression and differencing methods to reduce bandwidth usage.
 import platform
 from setuptools import setup
 
-if platform.win32_ver:
+if platform.system() == "Windows":
   import py2exe
   combine_metadata["console"] = []
 
