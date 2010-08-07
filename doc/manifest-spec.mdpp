@@ -116,6 +116,8 @@ Manifest Properties
 Action Properties
 -----------------
 
+For each action in a manifest, the following properties are defined:
+
 * "action" (string)
   Name of action to be performed.  Information about individual action types can be found
   in a later section of the specification.
@@ -149,3 +151,30 @@ Action Properties
   In cases where the full file does not have a recognized file extension, this allows the
   updater to determine what format to use when decompressing the file contents.
 
+
+Actions Types
+-------------
+
+* "verify": The file has not changed between versions, but the integrity of the file should
+  be verified, and the file should be replaced if it fails the integrity check.  The
+  "sha1-before" defines the fingerprint for integrity checking; "full-uri" and "full-format"
+  define the location for corrupted files to be replaced from.
+
+* "create": The file is a new file in the update version, and should be installed,
+  overwriting any file already existing in the given path.  "full-uri" and "full-format"
+  define where to fetch the new file from; "sha1-after" defines the fingerprint for
+  checking integrity after installation.
+
+* "patch": The file from the new version should be obtained by applying a patch against the
+  old version of the file. "patch-uri" and "patch-format" define where to fetch the patch
+  from and how to apply the patch; "sha1-before" defines the fingerprint for checking
+  integrity of the old file before applying the patch; "sha1-after" defines the fingerprint
+  for checking integrity of the new file after applying the patch; "full-uri" and
+  "full-format" define where to fetch a full version of the new file if the integrity checks
+  or patching process fails at any point.
+
+* "replace": The file from the new version should be installed over top the old version,
+  overwriting it in place.  "full-uri" and "full-format" define where to fetch the new
+  file from; "sha1-after" defines the fingerprint for checking integrity after replacement.
+
+* "delete": The file from the old version is no longer used, and should be deleted.
