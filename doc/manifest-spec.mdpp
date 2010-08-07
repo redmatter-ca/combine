@@ -32,11 +32,11 @@ There are three primary file classes that the Combine manifest format supports:
 This file class is considered to represent a single file or asset, in either a compressed
 or uncompressed state.  Supported whole file formats include:
 
-* "raw": Uncompressed file format, with no transformations applied.
+* `raw`: Uncompressed file format, with no transformations applied.
 
-* "gzip": Compressed file format as defined by [GNU gzip](http://www.gzip.org/).
+* `gzip`: Compressed file format as defined by [GNU gzip](http://www.gzip.org/).
 
-* "bzip2": Compressed file format as defined by [bzip2](http://www.bzip.org/).
+* `bzip2`: Compressed file format as defined by [bzip2](http://www.bzip.org/).
 
 ### Patch Files
 
@@ -45,7 +45,7 @@ file, generally in a compressed state.  This class generally expects an existing
 to exist as a target for a special application to apply the patch, resulting in the new revision of the
 file.  Supported patch file formats include:
 
-* "bsdiff": Compressed file patch format, as defined by [bsdiff](http://www.daemonology.net/bsdiff/)
+* `bsdiff`: Compressed file patch format, as defined by [bsdiff](http://www.daemonology.net/bsdiff/)
 
 ### Package Files
 
@@ -53,13 +53,13 @@ This file class is considered to represent multiple files of the above file clas
 used for transmitting entire file hierarchies as single compressed package.  Supported package formats
 include:
 
-* "tar-gzip": Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
+* `tar-gzip`: Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
   using the gzip format defined by [GNU gzip](http://www.gzip.org/).
 
-* "tar-bzip2": Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
+* `tar-bzip2`: Archive format, as defined by [GNU Tar](http://www.gnu.org/software/tar/), compressed
   using the bzip2 format defined by [bzip2](http://www.bzip.org/).
 
-* "zip": Compressed archive format, as defined by the
+* `zip`: Compressed archive format, as defined by the
   [ZIP format](http://en.wikipedia.org/wiki/ZIP_(file_format))
 
 
@@ -69,11 +69,11 @@ URI Protocols
 These are the URI protocols that must be supported for base manifest specification.  Other
 protocols may be supported, but are not required:
 
-* "http", "https": Remote location using the HTTP protocol.  Support for SSL connections and
+* `http`, `https`: Remote location using the HTTP protocol.  Support for SSL connections and
   HTTP BASIC authentication is required.  Authentication credentials should be supplied as part
   of the URI string.
 
-* "package": Local filesystem path, relative to the root path of an extracted package archive.
+* `package`: Local filesystem path, relative to the root path of an extracted package archive.
   As an example, if a package has been extracted to `/tmp/pack`, `package://path/to/file` would refer
   to a full file path of `/tmp/pack/path/to/file`.
 
@@ -88,27 +88,27 @@ a hierarchy of data about what has changed in a file tree.
 Manifest Properties
 -------------------
 
-* "current-version" (string)
+* `current-version` (string)
   The version of the software already installed to the user's system.  In the case where the
   software has not yet been installed, this should be an empty string for convention.
 
-* "update-version" (string)
+* `update-version` (string)
   The version of the software that the user's installation will be updated to, or installed.
 
-* "package-uri" (string)
+* `package-uri` (string)
   A URI pointing to a package file that contains files relevant to the upgrade.  This can either
   be a remote URI that the updater will need to fetch the package from, or it can be a local
   URI for cases where the package would be pre-distributed with the updater/installer.
 
-* "package-format" (string, optional)
+* `package-format` (string, optional)
   In cases where the package file does not have a recognized file extension, this allows the
   updater to determine what format to use when extracting package contents.
 
-* "package-sha1" (string)
+* `package-sha1` (string)
   Hash fingerprint of the package file, using the SHA1 hashing algorithm, used to verify integrity
   of the package file before extracting contents.
 
-* "actions" (list)
+* `actions` (list)
   A list of dictionaries, each containing a set of values regarding to an action to take for an
   individual file in the software installation.
 
@@ -118,36 +118,36 @@ Action Properties
 
 For each action in a manifest, the following properties are defined:
 
-* "action" (string)
+* `action` (string)
   Name of action to be performed.  Information about individual action types can be found
   in a later section of the specification.
 
-* "filename" (string)
+* `filename` (string)
   Relative path and name of file, from the root of the software installation.
 
-* "sha1-before" (string, contextual)
+* `sha1-before` (string, contextual)
   Hash fingerprint of the installed file, using the SHA1 hashing algorithm, used to verify
   integrity of the file before performing the requested action.
 
-* "sha1-after" (string, contextual)
+* `sha1-after` (string, contextual)
   Hash fingerprint of the installed file, using the SHA1 hashing algorithm, used to verify
   integrity of the file after performing the requested action.
 
-* "patch-uri" (string, contextual)
+* `patch-uri` (string, contextual)
   A URI pointing to a patch file to be applied to an installed file.  This can either
   be a remote URI that the updater will need to fetch the file from, or it can be a local
   URI for cases where the package would be pre-distributed with the updater/installer.
 
-* "patch-format" (string, contextual)
+* `patch-format` (string, contextual)
   In cases where the patch file does not have a recognized file extension, this allows the
   updater to determine what format to use when applying the patch contents.
 
-* "full-uri" (string, contextual)
+* `full-uri` (string, contextual)
   A URI pointing to a full file to be applied to an installed file.  This can either
   be a remote URI that the updater will need to fetch the file from, or it can be a local
   URI for cases where the package would be pre-distributed with the updater/installer.
 
-* "full-format" (string, contextual)
+* `full-format` (string, contextual)
   In cases where the full file does not have a recognized file extension, this allows the
   updater to determine what format to use when decompressing the file contents.
 
@@ -155,26 +155,26 @@ For each action in a manifest, the following properties are defined:
 Actions Types
 -------------
 
-* "verify": The file has not changed between versions, but the integrity of the file should
+* `verify`: The file has not changed between versions, but the integrity of the file should
   be verified, and the file should be replaced if it fails the integrity check.  The
-  "sha1-before" defines the fingerprint for integrity checking; "full-uri" and "full-format"
+  `sha1-before` defines the fingerprint for integrity checking; `full-uri` and `full-format`
   define the location for corrupted files to be replaced from.
 
-* "create": The file is a new file in the update version, and should be installed,
-  overwriting any file already existing in the given path.  "full-uri" and "full-format"
-  define where to fetch the new file from; "sha1-after" defines the fingerprint for
+* `create`: The file is a new file in the update version, and should be installed,
+  overwriting any file already existing in the given path.  `full-uri` and `full-format`
+  define where to fetch the new file from; `sha1-after` defines the fingerprint for
   checking integrity after installation.
 
-* "patch": The file from the new version should be obtained by applying a patch against the
-  old version of the file. "patch-uri" and "patch-format" define where to fetch the patch
-  from and how to apply the patch; "sha1-before" defines the fingerprint for checking
-  integrity of the old file before applying the patch; "sha1-after" defines the fingerprint
-  for checking integrity of the new file after applying the patch; "full-uri" and
-  "full-format" define where to fetch a full version of the new file if the integrity checks
+* `patch`: The file from the new version should be obtained by applying a patch against the
+  old version of the file. `patch-uri` and `patch-format` define where to fetch the patch
+  from and how to apply the patch; `sha1-before` defines the fingerprint for checking
+  integrity of the old file before applying the patch; `sha1-after` defines the fingerprint
+  for checking integrity of the new file after applying the patch; `full-uri` and
+  `full-format` define where to fetch a full version of the new file if the integrity checks
   or patching process fails at any point.
 
-* "replace": The file from the new version should be installed over top the old version,
-  overwriting it in place.  "full-uri" and "full-format" define where to fetch the new
-  file from; "sha1-after" defines the fingerprint for checking integrity after replacement.
+* `replace`: The file from the new version should be installed over top the old version,
+  overwriting it in place.  `full-uri` and `full-format` define where to fetch the new
+  file from; `sha1-after` defines the fingerprint for checking integrity after replacement.
 
-* "delete": The file from the old version is no longer used, and should be deleted.
+* `delete`: The file from the old version is no longer used, and should be deleted.
