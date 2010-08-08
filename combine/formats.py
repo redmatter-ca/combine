@@ -31,6 +31,32 @@ def detect(filename):
 
     return format
 
+def extension(format, dot=True):
+    """
+    Return the canonical file extension for a given format.
+    """
+
+    if format == "zip":
+        extension = "zip"
+
+    elif format == "tar-bzip2":
+        extension = "tbz2"
+    elif format == "bzip2":
+        extension = "bz2"
+
+    elif format == "tar-gzip":
+        extension = "tgz"
+    elif format == "gzip":
+        extension = "gz"
+
+    else:
+        extension = ""
+
+    if dot:
+        return "." + extension
+    else:
+        return extension
+
 class Archive:
     """
     Generic archive manipulation class, acting as a wrapper for zipfile and
