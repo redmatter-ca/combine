@@ -6,7 +6,7 @@ from os import path
 import shutil
 import tempfile
 
-from combine import formats
+from combine import Archive, File
 
 class Package:
 
@@ -38,6 +38,7 @@ class Package:
         handle is still open from a previous operation, raise an error.
         """
 
+        # make sure the file handle is not already open
         if filename in self._fhs:
             fh = self._fhs[filename]
             if fh.closed:
@@ -45,7 +46,14 @@ class Package:
             else:
                 raise Exception("File %s already open" % (filename))
 
-        fh = open(path.join(self._tempdir, filename), mode)
+        # create directory structure if needed
+        if mode == "w":
+            dir = path.dirname(filename)
+            if not path.isdir(dir):
+                os.makedirs(dir)
+
+        # retrieve and track the file handle
+        fh = File(path.join(self._tempdir, filename), mode)
         self._fhs[filename] = fh
 
         return fh
@@ -55,7 +63,7 @@ class Package:
         Extract an existing package file into the temporary workspace.
         """
 
-        with formats.Archive(filename, mode="r") as archive:
+        with Archive(filename, mode="r") as archive:
             archive.extractall(self._tempdir)
 
     def write(self, filename, format=None):
@@ -67,7 +75,7 @@ class Package:
             if not fh.closed:
                 raise Exception("File %s still open" % (fn))
 
-        with formats.Archive(filename, mode="w") as archive:
+        with Archive(filename, mode="w") as archive:
             for root, dirs, files in os.walk(self._tempdir):
                 for file in files:
                     fullpath = path.join(root, file)
