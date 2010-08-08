@@ -41,11 +41,9 @@ class Manifest:
         for key, value in data.items():
             if key == "actions":
                 for action in value:
-                    mft.add_action(action)
+                    mft.add_action(dict(action))
             else:
                 mft.add_property(key, value)
-        for action in data["actions"]:
-            mft.add_action(action)
 
         return mft
 
