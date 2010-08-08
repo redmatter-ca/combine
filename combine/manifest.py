@@ -13,6 +13,12 @@ class Manifest:
         self.properties = {"manifest-format": MANIFEST_FORMAT}
         self.actions = []
 
+    def __getitem__(self, key):
+        return self.properties[key]
+
+    def __contains__(self, key):
+        return key in self.properties
+
     def add_property(self, name, value):
         self.properties[name] = value
 
