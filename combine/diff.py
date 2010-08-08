@@ -22,11 +22,17 @@ class Diff:
         for root, dirs, files in os.walk(oldpath):
             relpath = path.relpath(root, oldpath)
 
+            if relpath == ".":
+                relpath = ""
+
             for filename in files:
                 oldfiles.append(path.join(relpath, filename))
 
         for root, dirs, files in os.walk(newpath):
             relpath = path.relpath(root, newpath)
+
+            if relpath == ".":
+                relpath = ""
 
             for filename in files:
                 newfiles.append(path.join(relpath, filename))

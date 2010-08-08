@@ -83,7 +83,7 @@ class Archive:
         # create directory structure if needed
         if mode == "w":
             dir = path.dirname(filename)
-            if not path.isdir(path.dirname(filename)):
+            if dir != "" and not path.isdir(path.dirname(filename)):
                 os.makedirs(dir)
 
         # auto-detect format
@@ -184,7 +184,7 @@ class File:
         # create directory structure if needed
         if mode == "w":
             dir = path.dirname(filename)
-            if not path.isdir(path.dirname(filename)):
+            if dir != "" and not path.isdir(path.dirname(filename)):
                 os.makedirs(dir)
 
         # auto-detect format

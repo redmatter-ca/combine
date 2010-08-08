@@ -49,7 +49,7 @@ class Package:
         # create directory structure if needed
         if mode == "w":
             dir = path.dirname(filename)
-            if not path.isdir(dir):
+            if dir != "" and not path.isdir(dir):
                 os.makedirs(dir)
 
         # retrieve and track the file handle
