@@ -121,7 +121,7 @@ class Diff:
                     "filename": filename,
                     "sha1-before": sha1(path.join(currentpath, filename)),
                     "sha1-after": sha1(path.join(updatepath, filename)),
-                    "full-uri": "package://" + filename,
+                    "full-uri": "package:///" + filename,
                     "full-format": fileformat,
                 })
 
@@ -133,7 +133,7 @@ class Diff:
                     "action": "create",
                     "filename": filename,
                     "sha1-after": sha1(path.join(updatepath, filename)),
-                    "full-uri": "package://" + filename,
+                    "full-uri": "package:///" + filename,
                     "full-format": fileformat,
                 })
 
