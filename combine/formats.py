@@ -1,6 +1,7 @@
 # Copyright (c) 2010 John Reese
 # Licensed under the MIT license
 
+import os
 from os import path
 import zipfile
 import tarfile
@@ -63,7 +64,7 @@ class Archive:
     tarfile modules.
     """
 
-    def __init__(self, filename, format=None, mode="r"):
+    def __init__(self, filename, mode="r", format=None):
         """
         Load an appropriate archive file descriptor for the given filename and
         read/write access mode.
@@ -75,6 +76,12 @@ class Archive:
         # verify mode versus file existence
         if mode == "r" and not path.isfile(filename):
             raise Exception("Archive file does not exist")
+
+        # create directory structure if needed
+        if mode == "w":
+            dir = path.dirname(filename)
+            if not path.isdir(path.dirname(filename)):
+                os.makedirs(dir)
 
         # auto-detect format
         if format is None:
@@ -99,6 +106,7 @@ class Archive:
         self.filename = filename
         self.format = format
         self.mode = mode
+        self.closed = False
 
     def __enter__(self):
         return self
