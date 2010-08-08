@@ -3,14 +3,14 @@
 
 import yaml
 
-from combine import Change, CombineError
+from combine import CombineError
 
 MANIFEST_FORMAT = 1
 
 class Manifest:
 
     def __init__(self):
-        self.properties = {}
+        self.properties = {"manifest-format": MANIFEST_FORMAT}
         self.actions = []
 
     def add_property(self, name, value):
