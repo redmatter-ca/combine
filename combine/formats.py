@@ -3,8 +3,11 @@
 
 import os
 from os import path
+
 import zipfile
 import tarfile
+import bz2
+import gzip
 
 def detect(filename):
     """
@@ -157,3 +160,115 @@ class Archive:
 
         elif self.format == "tar-bzip2" or self.format == "tar-gzip":
             self.archive.close()
+
+        self.closed = True
+
+class File:
+    """
+    Generic file handling and compression interface for gzip and bzip2.
+    """
+
+    def __init__(self, filename, mode="r", format=None):
+        """
+        Load an appropriate file compression descriptor for the given filename
+        and read/write access mode.
+        """
+
+        if not (mode == "r" or mode == "w"):
+            raise Exception("Unsupported mode")
+
+        # verify mode versus file existence
+        if mode == "r" and not path.isfile(filename):
+            raise Exception("Compressed file does not exist")
+
+        # create directory structure if needed
+        if mode == "w":
+            dir = path.dirname(filename)
+            if not path.isdir(path.dirname(filename)):
+                os.makedirs(dir)
+
+        # auto-detect format
+        if format is None:
+            format = detect(filename)
+
+        # open the file descriptors
+        if format == "bzip2":
+            self.handle = bz2.BZ2File(filename, mode)
+
+        elif format == "gzip":
+            self.handle = gzip.GzipFile(filename, mode)
+
+        elif format == "raw":
+            self.handle = open(filename, mode)
+
+        else:
+            raise Exception("Unsupport compression format: %s" % format)
+
+        # instance state
+        self.filename = filename
+        self.format = format
+        self.mode = mode
+        self.closed = False
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, trace):
+        self.close()
+
+    def compress(self, filename):
+        """
+        Write a compressed file using an existing file as the source.
+        """
+
+        if not self.mode == "w":
+            raise Exception("File not opened for write access")
+
+        if not path.isfile(filename):
+            raise Exception("Source file does not exist")
+
+        with open(filename, "rb") as source:
+            self.handle.write(source.read())
+
+    def decompress(self, filename):
+        """
+        Read a compressed into a new file as the target.
+        """
+
+        if not self.mode == "r":
+            raise Exception("File not opened for read access")
+
+        if path.isfile(filename):
+            raise Exception("Target file already exists")
+
+        with open(filename, "wb") as target:
+            target.write(self.handle.read())
+
+    def read(self):
+        """
+        Read the contents of a file.
+        """
+
+        if not self.mode == "r":
+            raise Exception("File not opened for read access")
+
+        return self.handle.read()
+
+    def write(self, data):
+        """
+        Write data to a file.
+        """
+
+        if not self.mode == "w":
+            raise Exception("File not opened for write access")
+
+        return self.handle.write(data)
+
+    def close(self):
+        """
+        Close out any file descriptors.
+        """
+
+        self.handle.close()
+
+        self.closed = True
