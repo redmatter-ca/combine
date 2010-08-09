@@ -5,5 +5,5 @@ from combine import Diff, Config
 
 Config.read("test.conf")
 d = Diff()
-d.generate_update("1", "examples/ver1", "2", "examples/ver2")
+d.generate_update("1", "ver1", "2", "ver2")
 
