@@ -103,7 +103,7 @@ class Archive:
             self.archive = tarfile.open(filename, tmode)
 
         else:
-            raise Exception("Unsupport archive format: %s" % format)
+            raise Exception("Unsupported archive format: %s" % format)
 
         # instance state
         self.filename = filename
@@ -175,11 +175,11 @@ class File:
         """
 
         if not (mode == "r" or mode == "w"):
-            raise Exception("Unsupported mode")
+            raise Exception("Unsupported mode %s" % (mode))
 
         # verify mode versus file existence
         if mode == "r" and not path.isfile(filename):
-            raise Exception("Compressed file does not exist")
+            raise Exception("File '%s' does not exist" % (filename))
 
         # create directory structure if needed
         if mode == "w":
@@ -198,11 +198,8 @@ class File:
         elif format == "gzip":
             self.handle = gzip.GzipFile(filename, mode)
 
-        elif format == "raw":
-            self.handle = open(filename, mode)
-
         else:
-            raise Exception("Unsupport compression format: %s" % format)
+            self.handle = open(filename, mode)
 
         # instance state
         self.filename = filename
