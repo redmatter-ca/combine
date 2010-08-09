@@ -16,4 +16,5 @@ from combine.manifest import Manifest
 from combine.uri import URI
 
 from combine.diff import Diff
+from combine.update import Update
 
