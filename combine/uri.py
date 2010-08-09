@@ -14,9 +14,10 @@ class URI:
         self.package = package
         self.format = format
         self.target = target
+        self.handle = None
 
     def __getitem__(self, key):
-        return self.parse[key]
+        return self.parse.__getattribute__(key)
 
     def fetch(self, target=None):
         parse = self.parse
@@ -30,7 +31,8 @@ class URI:
             if self.package is None:
                 raise Exception("No package specified")
 
-            self.handle = self.package.open(parse.path, "r", format=self.format)
+            filename = parse.path.lstrip("/")
+            self.handle = self.package.open(filename, "r", format=self.format)
 
         # remote http resource
         elif parse.scheme in ("http", "https"):
@@ -56,5 +58,6 @@ class URI:
         self.close()
 
     def close(self):
-        self.handle.close()
+        if self.handle:
+            self.handle.close()
 
