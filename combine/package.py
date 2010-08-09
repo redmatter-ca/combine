@@ -32,7 +32,7 @@ class Package:
     def __exit__(self, type, value, trace):
         self.close()
 
-    def open(self, filename, mode="r"):
+    def open(self, filename, mode="r", format=None):
         """
         Open a file descriptor in the package's workspace. If the file
         handle is still open from a previous operation, raise an error.
@@ -53,7 +53,7 @@ class Package:
                 os.makedirs(dir)
 
         # retrieve and track the file handle
-        fh = File(path.join(self._tempdir, filename), mode)
+        fh = File(path.join(self._tempdir, filename), mode, format=format)
         self._fhs[filename] = fh
 
         return fh
