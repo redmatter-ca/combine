@@ -8,21 +8,29 @@ from combine import Package, File
 
 class URI:
 
-    def __init__(self, uri, package=None, format=None):
+    def __init__(self, uri, package=None, format=None, target=None):
         self.uri = uri
+        self.parse = urlparse.urlparse(uri)
+        self.package = package
+        self.format = format
+        self.target = target
 
-        parse = urlparse.urlparse(uri)
+    def __getitem__(self, key):
+        return self.parse[key]
+
+    def fetch(self, target=None):
+        parse = self.parse
 
         # local file
         if parse.scheme == "file":
-            self.handle = File(parse.path, "r", format=None)
+            self.handle = File(parse.path, "r", format=self.format)
 
         # package file
         elif parse.scheme == "package":
-            if package is None:
+            if self.package is None:
                 raise Exception("No package specified")
 
-            self.handle = package.open(parse.path, "r", format=None)
+            self.handle = self.package.open(parse.path, "r", format=self.format)
 
         # remote http resource
         elif parse.scheme in ("http", "https"):
@@ -31,14 +39,21 @@ class URI:
         else:
             raise Exception("Unsupported URI scheme %s" % (parse.scheme))
 
-    def __enter__(self):
+        # write directly to file if requested, and then open that
+        if target:
+            with File(target, "w") as fh:
+                fh.write(self.handle.read())
+
+            self.handle.close()
+            self.handle = File(target, "r")
+
         return self.handle
+
+    def __enter__(self):
+        return self.fetch(target=self.target)
 
     def __exit__(self, type, value, trace):
         self.close()
-
-    def read(self):
-        return self.handle.read()
 
     def close(self):
         self.handle.close()
