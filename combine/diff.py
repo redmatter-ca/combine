@@ -37,8 +37,10 @@ class Diff:
             for filename in files:
                 newfiles.append(path.join(relpath, filename))
 
-        unmodified, modified, removed = filecmp.cmpfiles(oldpath, newpath, oldfiles)
-        unmodified, modified, added = filecmp.cmpfiles(oldpath, newpath, newfiles)
+        unmodified, modified, removed = filecmp.cmpfiles(oldpath, newpath,
+                                                         oldfiles, shallow=False)
+        unmodified, modified, added = filecmp.cmpfiles(oldpath, newpath,
+                                                       newfiles, shallow=False)
 
         return unmodified, modified, added, removed
 
