@@ -4,6 +4,7 @@
 import os
 from os import path
 
+from fnmatch import fnmatch
 import filecmp
 import hashlib
 from  platform import system
@@ -19,6 +20,9 @@ class Diff:
         oldfiles = []
         newfiles = []
 
+        includes = eval(Config.get("actions", "include"))
+        excludes = eval(Config.get("actions", "exclude"))
+
         for root, dirs, files in os.walk(oldpath):
             relpath = path.relpath(root, oldpath)
 
@@ -26,7 +30,12 @@ class Diff:
                 relpath = ""
 
             for filename in files:
-                oldfiles.append(path.join(relpath, filename))
+                filepath = path.join(relpath, filename)
+
+                if (any(map(lambda glob: fnmatch(filepath, glob), excludes))):
+                    continue
+                if (any(map(lambda glob: fnmatch(filepath, glob), includes))):
+                    oldfiles.append(filepath)
 
         for root, dirs, files in os.walk(newpath):
             relpath = path.relpath(root, newpath)
@@ -35,7 +44,12 @@ class Diff:
                 relpath = ""
 
             for filename in files:
-                newfiles.append(path.join(relpath, filename))
+                filepath = path.join(relpath, filename)
+
+                if (any(map(lambda glob: fnmatch(filepath, glob), excludes))):
+                    continue
+                if (any(map(lambda glob: fnmatch(filepath, glob), includes))):
+                    newfiles.append(filepath)
 
         unmodified, modified, removed = filecmp.cmpfiles(oldpath, newpath,
                                                          oldfiles, shallow=False)
