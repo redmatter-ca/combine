@@ -4,6 +4,7 @@
 import os
 from os import path
 
+import shutil
 import tempfile
 
 from combine import sha1, Manifest, Package, File, URI
@@ -57,13 +58,66 @@ class Update:
 
             self.package = Package(packagepath, packageformat)
 
+        # create spot for backup files
+        self.backuppath = tempfile.mkdtemp(prefix="update_")
+
         # start applying actions
-        for info in manifest.actions:
-            self._action(info)
+        try:
+            for info in manifest.actions:
+                self._action(info)
+
+        # handle update errors by rolling back
+        except Exception as err:
+            print("Exception caught; beginning rollback")
+
+            for root, dirs, files in os.walk(self.backuppath):
+                relpath = path.relpath(root, self.backuppath)
+
+                if relpath == ".":
+                    relpath = ""
+
+                for filename in files:
+                    filepath = path.join(relpath, filename)
+
+                    print("Rolling back file %s" % (filepath))
+
+                    self._restore(filepath)
+
+            print("Rollback completed; raising exception")
+            raise
 
         # clean up
-        self.package.close()
-        os.remove(packagepath)
+        finally:
+            shutil.rmtree(self.backuppath)
+            self.package.close()
+            os.remove(packagepath)
+
+    def _backup(self, filename, delete=True):
+        ipath = path.join(self.installpath, filename)
+        bpath = path.join(self.backuppath, filename)
+
+        bdir = path.dirname(bpath)
+        if not path.isdir(bdir):
+            os.makedirs(bdir)
+
+        shutil.copy(ipath, bpath)
+
+        if delete:
+            os.remove(ipath)
+
+    def _restore(self, filename):
+        ipath = path.join(self.installpath, filename)
+        bpath = path.join(self.backuppath, filename)
+
+        idir = path.dirname(ipath)
+        if not path.isdir(idir):
+            os.makedirs(idir)
+
+        if path.isfile(ipath):
+            os.remove(ipath)
+
+        shutil.copy(bpath, ipath)
+        os.remove(bpath)
 
     def _action(self, info):
         action = info["action"]
@@ -79,6 +133,7 @@ class Update:
                     if "full-format" in info:
                         fullformat = info["full-format"]
 
+                    self._backup(filename)
                     with URI(info["full-uri"], package=self.package, format=fullformat,
                              target=fullpath):
                         if not sha1(fullpath) == hash:
@@ -111,6 +166,7 @@ class Update:
                 if "full-format" in info:
                     fullformat = info["full-format"]
 
+                self._backup(filename)
                 with URI(info["full-uri"], package=self.package, format=fullformat,
                          target=fullpath):
                     if not sha1(fullpath) == hash:
@@ -121,7 +177,11 @@ class Update:
 
         # delete a file with little recourse
         elif action == "delete":
-            os.remove(fullpath)
+            self._backup(filename, delete=True)
+
+        # intentional exception to test rollbacks
+        elif action == "exception":
+            raise Exception("Intentional exception raised")
 
         # /shrug
         else:
