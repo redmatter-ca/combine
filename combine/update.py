@@ -88,9 +88,17 @@ class Update:
 
         # clean up
         finally:
-            shutil.rmtree(self.backuppath)
+            self.cleanup = False
+            shutil.rmtree(self.backuppath, onerror=self._onerror)
+
             self.package.close()
             os.remove(packagepath)
+
+            if self.cleanup:
+                return self.backuppath
+
+    def _onerror(self, func, filepath, error):
+        self.cleanup = True
 
     def _backup(self, filename, delete=True):
         ipath = path.join(self.installpath, filename)
