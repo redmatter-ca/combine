@@ -36,7 +36,7 @@ class URI:
 
         # remote http resource
         elif parse.scheme in ("http", "https"):
-            self.handle = urllib2.urlopen(uri)
+            self.handle = urllib2.urlopen(self.uri)
 
         else:
             raise Exception("Unsupported URI scheme %s" % (parse.scheme))
