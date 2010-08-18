@@ -48,8 +48,12 @@ class URI:
         # remote http resource
         elif parse.scheme in ("http", "https"):
             if target:
-                downloadpath, headers = urllib.urlretrieve(self.uri, target)
-                self.handle = File(target, "r", format=self.format)
+                print("  Downloading {}".format(self.uri))
+                downloadpath, headers = urllib.urlretrieve(self.uri)
+                self.handle = File(downloadpath, "r", format=self.format)
+                self.handle.decompress(target)
+                self.handle.close()
+                self.handle = File(target, "r")
             else:
                 self.handle = urllib2.urlopen(self.uri)
 
