@@ -38,6 +38,8 @@ class Package:
         handle is still open from a previous operation, raise an error.
         """
 
+        filename = path.normpath(filename)
+
         # make sure the file handle is not already open
         if filename in self._fhs:
             fh = self._fhs[filename]
@@ -46,14 +48,16 @@ class Package:
             else:
                 raise Exception("File %s already open" % (filename))
 
+        filepath = path.join(self._tempdir, filename)
+
         # create directory structure if needed
         if mode == "w":
-            dir = path.dirname(filename)
+            dir = path.dirname(filepath)
             if dir != "" and not path.isdir(dir):
                 os.makedirs(dir)
 
         # retrieve and track the file handle
-        fh = File(path.join(self._tempdir, filename), mode, format=format)
+        fh = File(filepath, mode, format=format)
         self._fhs[filename] = fh
 
         return fh
@@ -63,6 +67,8 @@ class Package:
         Extract an existing package file into the temporary workspace.
         """
 
+        filename = path.normpath(filename)
+
         with Archive(filename, mode="r") as archive:
             archive.extractall(self._tempdir)
 
@@ -70,6 +76,8 @@ class Package:
         """
         Create a new package file from the temporary workspace.
         """
+
+        filename = path.normpath(filename)
 
         for fn, fh in self._fhs.items():
             if not fh.closed:

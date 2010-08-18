@@ -73,6 +73,8 @@ class Archive:
         read/write access mode.
         """
 
+        filename = path.normpath(filename)
+
         if not (mode == "r" or mode == "w"):
             raise Exception("Unsupported mode")
 
@@ -121,6 +123,8 @@ class Archive:
         Extract all files from an archive to an existing directory
         """
 
+        directory = path.normpath(directory)
+
         if not self.mode == "r":
             raise Exception("Archive not opened for read access")
 
@@ -137,6 +141,8 @@ class Archive:
         """
         Add a file to a new archive.
         """
+
+        filename = path.normpath(filename)
 
         if not self.mode == "w":
             raise Exception("Archive not opened for read access")
@@ -173,6 +179,8 @@ class File:
         Load an appropriate file compression descriptor for the given filename
         and read/write access mode.
         """
+
+        filename = path.normpath(filename)
 
         if not (mode == "r" or mode == "w"):
             raise Exception("Unsupported mode %s" % (mode))
@@ -218,6 +226,8 @@ class File:
         Write a compressed file using an existing file as the source.
         """
 
+        filename = path.normpath(filename)
+
         if not self.mode == "w":
             raise Exception("File not opened for write access")
 
@@ -232,11 +242,17 @@ class File:
         Read a compressed into a new file as the target.
         """
 
+        filename = path.normpath(filename)
+
         if not self.mode == "r":
             raise Exception("File not opened for read access")
 
         if path.isfile(filename):
             raise Exception("Target file already exists")
+
+        dir = path.dirname(filename)
+        if not path.isdir(dir):
+            os.makedirs(dir)
 
         with open(filename, "wb") as target:
             target.write(self.handle.read())
