@@ -199,7 +199,7 @@ class File:
             self.handle = gzip.GzipFile(filename, mode)
 
         else:
-            self.handle = open(filename, mode)
+            self.handle = open(filename, mode + "b")
 
         # instance state
         self.filename = filename
