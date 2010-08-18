@@ -11,6 +11,9 @@ def sha1(filepath):
 
     filepath = path.normpath(filepath)
 
+    if not path.isfile(filepath):
+        return ""
+
     with open(filepath, "rb") as fh:
         data = fh.read()
 

@@ -107,6 +107,9 @@ class Update:
         ipath = path.join(self.installpath, filename)
         bpath = path.join(self.backuppath, filename)
 
+        if not path.isfile(ipath):
+            return
+
         bdir = path.dirname(bpath)
         if not path.isdir(bdir):
             os.makedirs(bdir)
