@@ -1,6 +1,7 @@
 # Copyright (c) 2010 John Reese
 # Licensed under the MIT license
 
+import urllib
 import urllib2
 import urlparse
 
@@ -26,6 +27,11 @@ class URI:
         if parse.scheme == "file":
             self.handle = File(parse.path, "r", format=self.format)
 
+            if target:
+                self.handle.decompress(target)
+                self.handle.close()
+                self.handle = File(target, "r")
+
         # package file
         elif parse.scheme == "package":
             if self.package is None:
@@ -34,20 +40,23 @@ class URI:
             filename = parse.path.lstrip("/")
             self.handle = self.package.open(filename, "r", format=self.format)
 
+            if target:
+                self.handle.decompress(target)
+                self.handle.close()
+                self.handle = File(target, "r")
+
         # remote http resource
         elif parse.scheme in ("http", "https"):
-            self.handle = urllib2.urlopen(self.uri)
+            if target:
+                downloadpath, headers = urllib.urlretrieve(self.uri, target)
+                self.handle = File(target, "r", format=self.format)
+            else:
+                self.handle = urllib2.urlopen(self.uri)
+
+            return self.handle
 
         else:
             raise Exception("Unsupported URI scheme %s" % (parse.scheme))
-
-        # write directly to file if requested, and then open that
-        if target:
-            with File(target, "w") as fh:
-                fh.write(self.handle.read())
-
-            self.handle.close()
-            self.handle = File(target, "r")
 
         return self.handle
 
