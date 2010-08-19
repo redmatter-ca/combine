@@ -61,6 +61,13 @@ def extension(format, dot=True):
     else:
         return extension
 
+def slashes(filenames):
+    """
+    Convert backslashes from Windows paths to forward slashes.
+    """
+
+    return [p.replace("\\", "/") for p in filenames]
+
 class Archive:
     """
     Generic archive manipulation class, acting as a wrapper for zipfile and

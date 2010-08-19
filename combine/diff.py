@@ -12,7 +12,7 @@ import tempfile
 
 from combine import Config, Manifest, Package, File
 from combine.hash import sha1
-from combine.formats import extension
+from combine.formats import extension, slashes
 
 class Diff:
 
@@ -55,6 +55,11 @@ class Diff:
                                                          oldfiles, shallow=False)
         unmodified, modified, added = filecmp.cmpfiles(oldpath, newpath,
                                                        newfiles, shallow=False)
+
+        unmodified = slashes(unmodified)
+        modified = slashes(modified)
+        added = slashes(added)
+        removed = slashes(removed)
 
         return unmodified, modified, added, removed
 
