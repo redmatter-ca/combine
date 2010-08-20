@@ -118,14 +118,14 @@ class Update:
 
         try:
             if move:
-                log.debug("Backing up file {1} by moving to backup directory".format(filename))
+                log.debug("Backing up file {0} by moving to backup directory".format(filename))
                 shutil.move(ipath, bpath)
             else:
-                log.debug("Backing up file {1} by copying to backup directory".format(filename))
+                log.debug("Backing up file {0} by copying to backup directory".format(filename))
                 shutil.copy(ipath, bpath)
 
         except:
-            log.debug("Backup failed for {1}".format(filename))
+            log.debug("Backup failed for {0}".format(filename))
 
     def _restore(self, filename):
         ipath = path.join(self.installpath, filename)
@@ -137,14 +137,14 @@ class Update:
 
         try:
             if path.isfile(ipath):
-                log.debug("Removing file {1} before restoring old version".format(filename))
+                log.debug("Removing file {0} before restoring old version".format(filename))
                 os.remove(ipath)
 
-            log.debug("Restoring file {1} by moving from backup directory".format(filename))
+            log.debug("Restoring file {0} by moving from backup directory".format(filename))
             shutil.move(bpath, ipath)
 
         except:
-            log.debug("Restore failed for {1}".format(filename))
+            log.debug("Restore failed for {0}".format(filename))
 
     def _action(self, info):
         action = info["action"]
