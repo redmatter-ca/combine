@@ -22,7 +22,7 @@ class Update:
 
         # verify versions match
         if currentver != manifest["current-version"]:
-            log.error("Current version '{}' does not match manifest '{}'".format(
+            log.error("Current version '{0}' does not match manifest '{1}'".format(
                 currentver, manifest["current-version"]))
             raise Exception("Current version does not match manifest")
 
@@ -49,10 +49,10 @@ class Update:
 
             # fetch package, or use from existing location if already fetched
             if not path.isfile(packagepath):
-                log.info("Fetching update package from {}".format(packageuri.uri))
+                log.info("Fetching update package from {0}".format(packageuri.uri))
                 packageuri.fetch(packagepath)
             else:
-                log.info("Using local update package from {}".format(packagepath))
+                log.info("Using local update package from {0}".format(packagepath))
             packageuri.close()
 
             # integrity check
@@ -142,7 +142,7 @@ class Update:
 
         # verify file integrity and attempt to repair if corrupted
         if action == "verify":
-            log.info("Action: verify {}".format(filename))
+            log.info("Action: verify {0}".format(filename))
             hash = info["sha1-before"]
             if not sha1(fullpath) == hash:
                 if "full-uri" in info:
@@ -151,7 +151,7 @@ class Update:
                         fullformat = info["full-format"]
 
                     self._backup(filename)
-                    log.info("Extract replacement file from {}".format(info["full-uri"]))
+                    log.info("Extract replacement file from {0}".format(info["full-uri"]))
                     with URI(info["full-uri"], package=self.package, format=fullformat,
                              target=fullpath):
                         if not sha1(fullpath) == hash:
@@ -162,14 +162,14 @@ class Update:
 
         # create a new file and verify integrity
         elif action == "create":
-            log.info("Action: create {}".format(filename))
+            log.info("Action: create {0}".format(filename))
             hash = info["sha1-after"]
             if "full-uri" in info:
                 fullformat = None
                 if "full-format" in info:
                     fullformat = info["full-format"]
 
-                log.info("Extract new file from {}".format(info["full-uri"]))
+                log.info("Extract new file from {0}".format(info["full-uri"]))
                 with URI(info["full-uri"], package=self.package, format=fullformat,
                          target=fullpath):
                     if not sha1(fullpath) == hash:
@@ -180,7 +180,7 @@ class Update:
 
         # replace file and verify replacement integrity
         elif action == "replace":
-            log.info("Action: replace {}".format(filename))
+            log.info("Action: replace {0}".format(filename))
             hash = info["sha1-after"]
             if "full-uri" in info:
                 fullformat = None
@@ -188,7 +188,7 @@ class Update:
                     fullformat = info["full-format"]
 
                 self._backup(filename)
-                log.info("Extract replacement file from {}".format(info["full-uri"]))
+                log.info("Extract replacement file from {0}".format(info["full-uri"]))
                 with URI(info["full-uri"], package=self.package, format=fullformat,
                          target=fullpath):
                     if not sha1(fullpath) == hash:
@@ -199,7 +199,7 @@ class Update:
 
         # delete a file with little recourse
         elif action == "delete":
-            log.info("Action: delete {}".format(filename))
+            log.info("Action: delete {0}".format(filename))
             self._backup(filename, delete=True)
 
         # intentional exception to test rollbacks

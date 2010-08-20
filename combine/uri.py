@@ -48,7 +48,7 @@ class URI:
         # remote http resource
         elif parse.scheme in ("http", "https"):
             if target:
-                log.info("Downloading {} to file {}".format(self.uri, target))
+                log.info("Downloading {0} to file {1}".format(self.uri, target))
                 downloadpath, headers = urllib.urlretrieve(self.uri)
                 self.handle = File(downloadpath, "r", format=self.format)
                 self.handle.decompress(target)
@@ -60,7 +60,7 @@ class URI:
             return self.handle
 
         else:
-            raise Exception("Unsupported URI scheme {}".format(parse.scheme))
+            raise Exception("Unsupported URI scheme {0}".format(parse.scheme))
 
         return self.handle
 
