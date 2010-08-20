@@ -105,7 +105,7 @@ class Update:
     def _onerror(self, func, filepath, error):
         self.cleanup = True
 
-    def _backup(self, filename, delete=True):
+    def _backup(self, filename, move=True):
         ipath = path.join(self.installpath, filename)
         bpath = path.join(self.backuppath, filename)
 
@@ -116,10 +116,16 @@ class Update:
         if not path.isdir(bdir):
             os.makedirs(bdir)
 
-        shutil.copy(ipath, bpath)
+        try:
+            if move:
+                log.debug("Backing up file {1} by moving to backup directory".format(filename))
+                shutil.move(ipath, bpath)
+            else:
+                log.debug("Backing up file {1} by copying to backup directory".format(filename))
+                shutil.copy(ipath, bpath)
 
-        if delete:
-            os.remove(ipath)
+        except:
+            log.debug("Backup failed for {1}".format(filename))
 
     def _restore(self, filename):
         ipath = path.join(self.installpath, filename)
@@ -129,11 +135,16 @@ class Update:
         if not path.isdir(idir):
             os.makedirs(idir)
 
-        if path.isfile(ipath):
-            os.remove(ipath)
+        try:
+            if path.isfile(ipath):
+                log.debug("Removing file {1} before restoring old version".format(filename))
+                os.remove(ipath)
 
-        shutil.copy(bpath, ipath)
-        os.remove(bpath)
+            log.debug("Restoring file {1} by moving from backup directory".format(filename))
+            shutil.move(bpath, ipath)
+
+        except:
+            log.debug("Restore failed for {1}".format(filename))
 
     def _action(self, info):
         action = info["action"]
@@ -200,7 +211,7 @@ class Update:
         # delete a file with little recourse
         elif action == "delete":
             log.info("Action: delete {0}".format(filename))
-            self._backup(filename, delete=True)
+            self._backup(filename)
 
         # intentional exception to test rollbacks
         elif action == "exception":
