@@ -8,6 +8,14 @@ class CombineError(Exception):
     def __str__(self):
         return repr(self.value)
 
+import logging
+class DefaultLogHandler(logging.Handler):
+    def emit(self, record):
+        pass
+
+log = logging.getLogger("combine")
+log.addHandler(DefaultLogHandler())
+
 from combine.hash import sha1
 from combine.formats import Archive, File
 from combine.config import Config

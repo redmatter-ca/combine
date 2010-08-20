@@ -7,7 +7,7 @@ from os import path
 import shutil
 import tempfile
 
-from combine import sha1, Manifest, Package, File, URI
+from combine import sha1, Manifest, Package, File, URI, log
 
 class Update:
 
@@ -22,6 +22,8 @@ class Update:
 
         # verify versions match
         if currentver != manifest["current-version"]:
+            log.error("Current version '{}' does not match manifest '{}'".format(
+                currentver, manifest["current-version"]))
             raise Exception("Current version does not match manifest")
 
         self.manifest = manifest
@@ -47,10 +49,10 @@ class Update:
 
             # fetch package, or use from existing location if already fetched
             if not path.isfile(packagepath):
-                print("Fetching update package from {}".format(manifest["package-uri"]))
+                log.info("Fetching update package from {}".format(packageuri.uri))
                 packageuri.fetch(packagepath)
             else:
-                print("Using local update package from {}".format(packagepath))
+                log.info("Using local update package from {}".format(packagepath))
             packageuri.close()
 
             # integrity check
@@ -71,7 +73,7 @@ class Update:
 
         # handle update errors by rolling back
         except Exception as err:
-            print("Exception caught; beginning rollback")
+            log.exception("Exception eaten; beginning rollback")
 
             for root, dirs, files in os.walk(self.backuppath):
                 relpath = path.relpath(root, self.backuppath)
@@ -82,11 +84,11 @@ class Update:
                 for filename in files:
                     filepath = path.join(relpath, filename)
 
-                    print("Rolling back file %s" % (filepath))
+                    log.info("Rolling back file %s" % (filepath))
 
                     self._restore(filepath)
 
-            print("Rollback completed; raising exception")
+            log.info("Rollback completed; raising exception")
             raise
 
         # clean up
@@ -140,7 +142,7 @@ class Update:
 
         # verify file integrity and attempt to repair if corrupted
         if action == "verify":
-            print("Action: verify {}".format(filename))
+            log.info("Action: verify {}".format(filename))
             hash = info["sha1-before"]
             if not sha1(fullpath) == hash:
                 if "full-uri" in info:
@@ -149,7 +151,7 @@ class Update:
                         fullformat = info["full-format"]
 
                     self._backup(filename)
-                    print("  Extract replacement file from {}".format(info["full-uri"]))
+                    log.info("Extract replacement file from {}".format(info["full-uri"]))
                     with URI(info["full-uri"], package=self.package, format=fullformat,
                              target=fullpath):
                         if not sha1(fullpath) == hash:
@@ -160,14 +162,14 @@ class Update:
 
         # create a new file and verify integrity
         elif action == "create":
-            print("Action: create {}".format(filename))
+            log.info("Action: create {}".format(filename))
             hash = info["sha1-after"]
             if "full-uri" in info:
                 fullformat = None
                 if "full-format" in info:
                     fullformat = info["full-format"]
 
-                print("  Extract new file from {}".format(info["full-uri"]))
+                log.info("Extract new file from {}".format(info["full-uri"]))
                 with URI(info["full-uri"], package=self.package, format=fullformat,
                          target=fullpath):
                     if not sha1(fullpath) == hash:
@@ -178,7 +180,7 @@ class Update:
 
         # replace file and verify replacement integrity
         elif action == "replace":
-            print("Action: replace {}".format(filename))
+            log.info("Action: replace {}".format(filename))
             hash = info["sha1-after"]
             if "full-uri" in info:
                 fullformat = None
@@ -186,7 +188,7 @@ class Update:
                     fullformat = info["full-format"]
 
                 self._backup(filename)
-                print("  Extract replacement file from {}".format(info["full-uri"]))
+                log.info("Extract replacement file from {}".format(info["full-uri"]))
                 with URI(info["full-uri"], package=self.package, format=fullformat,
                          target=fullpath):
                     if not sha1(fullpath) == hash:
@@ -197,12 +199,12 @@ class Update:
 
         # delete a file with little recourse
         elif action == "delete":
-            print("Action: delete {}".format(filename))
+            log.info("Action: delete {}".format(filename))
             self._backup(filename, delete=True)
 
         # intentional exception to test rollbacks
         elif action == "exception":
-            print("Action: exception")
+            log.warning("Action: exception")
             raise Exception("Intentional exception raised")
 
         # /shrug

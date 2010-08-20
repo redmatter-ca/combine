@@ -5,7 +5,7 @@ import urllib
 import urllib2
 import urlparse
 
-from combine import Package, File
+from combine import Package, File, log
 
 class URI:
 
@@ -48,7 +48,7 @@ class URI:
         # remote http resource
         elif parse.scheme in ("http", "https"):
             if target:
-                print("  Downloading {}".format(self.uri))
+                log.info("Downloading {} to file {}".format(self.uri, target))
                 downloadpath, headers = urllib.urlretrieve(self.uri)
                 self.handle = File(downloadpath, "r", format=self.format)
                 self.handle.decompress(target)
@@ -60,7 +60,7 @@ class URI:
             return self.handle
 
         else:
-            raise Exception("Unsupported URI scheme %s" % (parse.scheme))
+            raise Exception("Unsupported URI scheme {}".format(parse.scheme))
 
         return self.handle
 
