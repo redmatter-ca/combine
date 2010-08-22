@@ -1,6 +1,8 @@
 # Copyright (c) 2010 John Reese
 # Licensed under the MIT license
 
+import os
+import traceback
 import urllib
 import urllib2
 import urlparse
@@ -47,15 +49,38 @@ class URI:
 
         # remote http resource
         elif parse.scheme in ("http", "https"):
-            if target:
-                log.info("Downloading {0} to file {1}".format(self.uri, target))
-                downloadpath, headers = urllib.urlretrieve(self.uri)
-                self.handle = File(downloadpath, "r", format=self.format)
-                self.handle.decompress(target)
-                self.handle.close()
-                self.handle = File(target, "r")
-            else:
-                self.handle = urllib2.urlopen(self.uri)
+            failure = False
+            tries = 0
+
+            while failure:
+                failure = False
+
+                try:
+                    if target:
+                        log.info("Downloading {0} to file {1}".format(self.uri, target))
+                        downloadpath, headers = urllib.urlretrieve(self.uri)
+                        self.handle = File(downloadpath, "r", format=self.format)
+                        self.handle.decompress(target)
+                        self.handle.close()
+                        self.handle = File(target, "r")
+                    else:
+                        self.handle = urllib2.urlopen(self.uri)
+
+                except:
+                    failure = True
+                    if tries < 3:
+                        log.info("Problem retrieving URI, retry in 3 seconds...")
+                        log.debug(traceback.format_exception(sys.exc_type,
+                                                             sys.exc_value,
+                                                             sys.exc_traceback))
+                        os.sleep(3)
+
+                    else:
+                        log.info("Failed retrieving URI")
+                        raise
+
+                finally:
+                    tries += 1
 
             return self.handle
 
