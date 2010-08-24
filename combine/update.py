@@ -47,12 +47,9 @@ class Update:
             if "package-format" in manifest:
                 packageformat = manifest["package-format"]
 
-            # fetch package, or use from existing location if already fetched
-            if not path.isfile(packagepath):
-                log.info("Fetching update package from {0}".format(packageuri.uri))
-                packageuri.fetch(packagepath)
-            else:
-                log.info("Using local update package from {0}".format(packagepath))
+            # download package file
+            log.info("Fetching update package from {0}".format(packageuri.uri))
+            packageuri.fetch(packagepath)
             packageuri.close()
 
             # integrity check
