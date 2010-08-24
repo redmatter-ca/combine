@@ -254,9 +254,6 @@ class File:
         if not self.mode == "r":
             raise Exception("File not opened for read access")
 
-        if path.isfile(filename):
-            raise Exception("Target file already exists")
-
         dir = path.dirname(filename)
         if not path.isdir(dir):
             os.makedirs(dir)
