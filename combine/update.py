@@ -109,8 +109,8 @@ class Update:
         self.cleanup = True
 
     def _backup(self, filename, move=True):
-        ipath = path.join(self.installpath, filename)
-        bpath = path.join(self.backuppath, filename)
+        ipath = path.normpath(path.join(self.installpath, filename))
+        bpath = path.normpath(path.join(self.backuppath, filename))
 
         if not path.isfile(ipath):
             return
@@ -131,8 +131,8 @@ class Update:
             log.debug("Backup failed for {0}".format(filename))
 
     def _restore(self, filename):
-        ipath = path.join(self.installpath, filename)
-        bpath = path.join(self.backuppath, filename)
+        ipath = path.normpath(path.join(self.installpath, filename))
+        bpath = path.normpath(path.join(self.backuppath, filename))
 
         idir = path.dirname(ipath)
         if not path.isdir(idir):
