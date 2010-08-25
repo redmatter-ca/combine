@@ -67,7 +67,8 @@ class Update:
             self.backuppath = backuppath
 
         if not path.isdir(self.backuppath):
-            raise Exception("Backup path {0} does not exist".format(self.backuppath))
+            log.debug("Backup path {0} does not exist; creating".format(self.backuppath))
+            os.mkdir(self.backuppath)
 
         # start applying actions
         try:
