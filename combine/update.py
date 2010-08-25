@@ -29,7 +29,7 @@ class Update:
         self.manifest = manifest
         self.package = None
 
-    def apply(self, installpath):
+    def apply(self, installpath, backuppath=None):
         """
         Apply the manifest against the given installation path.
         """
@@ -61,7 +61,13 @@ class Update:
             self.package = Package(packagepath, packageformat)
 
         # create spot for backup files
-        self.backuppath = tempfile.mkdtemp(prefix="update_")
+        if backuppath is None:
+            self.backuppath = tempfile.mkdtemp(prefix="update_")
+        else:
+            self.backuppath = backuppath
+
+        if not path.isdir(self.backuppath):
+            raise Exception("Backup path {0} does not exist".format(self.backuppath))
 
         # start applying actions
         try:
