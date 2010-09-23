@@ -49,7 +49,7 @@ class URI:
 
         # remote http resource
         elif parse.scheme in ("http", "https"):
-            failure = False
+            failure = True
             tries = 0
 
             while failure:
