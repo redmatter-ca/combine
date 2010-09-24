@@ -57,6 +57,7 @@ class URI:
 
                 try:
                     if target:
+                        target = path.normpath(target)
                         log.info("Downloading {0} to file {1}".format(self.uri, target))
                         downloadpath, headers = urllib.urlretrieve(self.uri)
                         self.handle = File(downloadpath, "r", format=self.format)
