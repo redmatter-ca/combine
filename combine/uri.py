@@ -2,6 +2,9 @@
 # Licensed under the MIT license
 
 import os
+from os import path
+import sys
+import time
 import traceback
 import urllib
 import urllib2
@@ -74,7 +77,7 @@ class URI:
                         log.debug(traceback.format_exception(sys.exc_type,
                                                              sys.exc_value,
                                                              sys.exc_traceback))
-                        os.sleep(3)
+                        time.sleep(3)
 
                     else:
                         log.info("Failed retrieving URI")
