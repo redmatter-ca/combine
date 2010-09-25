@@ -11,14 +11,18 @@ from combine import sha1, Manifest, Package, File, URI, log
 
 class Update:
 
-    def __init__(self, currentver, manifesturi):
+    def __init__(self, currentver, manifest=None, manifesturi=None):
         """
         Fetch a manifest and verify that it matches the given version.
         """
 
         # fetch the manifest
-        with URI(manifesturi) as uri:
-            manifest = Manifest.from_yaml(uri.read())
+        if manifest is None:
+            if manifesturi is None:
+                raise Exception("Update not given manifest object or URI")
+
+            with URI(manifesturi) as uri:
+                manifest = Manifest.from_yaml(uri.read())
 
         # verify versions match
         if currentver != manifest["current-version"]:
